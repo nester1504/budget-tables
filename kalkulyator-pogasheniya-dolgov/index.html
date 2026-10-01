@@ -1,0 +1,48 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Калькулятор погашения долгов: метод лавины и снежного кома</title><meta name="description" content="Внесите кредиты и кредитные карты, и калькулятор покажет, за сколько месяцев вы закроете долги и сколько сэкономите на процентах."><link rel="canonical" href="https://nester1504.github.io/budget-tables/kalkulyator-pogasheniya-dolgov/">
+<meta property="og:type" content="website"><meta property="og:title" content="Калькулятор погашения долгов: метод лавины и снежного кома"><meta property="og:description" content="Внесите кредиты и кредитные карты, и калькулятор покажет, за сколько месяцев вы закроете долги и сколько сэкономите на процентах."><meta property="og:url" content="https://nester1504.github.io/budget-tables/kalkulyator-pogasheniya-dolgov/"><meta property="og:locale" content="ru_RU"><meta property="og:site_name" content="Личные финансы просто">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "name": "Калькулятор погашения долгов: метод лавины и снежного кома", "description": "Внесите кредиты и кредитные карты, и калькулятор покажет, за сколько месяцев вы закроете долги и сколько сэкономите на процентах.", "url": "https://nester1504.github.io/budget-tables/kalkulyator-pogasheniya-dolgov/", "inLanguage": "ru"}</script>
+<style>*{box-sizing:border-box}:root{--bg:#fbfcfb;--fg:#1b2b25;--mut:#5a6b64;--acc:#1F7A5C;--card:#fff;--line:#e2ebe6}
+@media(prefers-color-scheme:dark){:root{--bg:#121816;--fg:#e6efe9;--mut:#9fb2a9;--acc:#4cc59a;--card:#1a221f;--line:#2a3531}}
+body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.65 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:0 16px}header{border-bottom:1px solid var(--line);padding:14px 0}header a{color:var(--fg);text-decoration:none;font-weight:700}
+h1{font-size:2rem;line-height:1.2;margin:32px 0 12px}h2{font-size:1.3rem;margin:28px 0 8px}a{color:var(--acc)}
+.lead{color:var(--mut)}.cta{background:var(--card);border:2px solid var(--acc);border-radius:14px;padding:20px;margin:36px 0}
+.btn{display:inline-block;background:var(--acc);color:#fff;padding:10px 18px;border-radius:10px;text-decoration:none;font-weight:600;margin-top:8px}
+.list a{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0;text-decoration:none;color:var(--fg)}
+.list small{color:var(--mut);display:block}.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin:20px 0}.calc label{display:block;margin:0 0 12px;font-weight:600}.calc input,.calc select{display:block;width:100%;margin-top:4px;padding:10px;font:inherit;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}.res{border-top:1px solid var(--line);margin-top:8px;padding-top:4px}.res small{color:var(--mut)}
+footer{color:var(--mut);font-size:14px;padding:30px 0;border-top:1px solid var(--line);margin-top:40px}</style></head><body><header><div class="w"><a href="../">Личные финансы просто</a> · <a href="../#tools" style="font-weight:400">Калькуляторы</a></div></header>
+<main class="w"><h1>Калькулятор погашения долгов: метод лавины и снежного кома</h1><p class="lead">Внесите кредиты и кредитные карты, и калькулятор покажет, за сколько месяцев вы закроете долги и сколько сэкономите на процентах.</p>
+<div class="calc" id="debts">
+<p><small>Остаток долга, ставка в % годовых и минимальный платёж в месяц. Пустые строки не учитываются.</small></p>
+</div>
+<div class="calc">
+<label>Сверх минимальных платежей готов платить в месяц, ₽<input id="extra" inputmode="decimal" value="5000"></label>
+<label>Метод<select id="meth"><option value="a">Лавина: сначала самый дорогой процент</option><option value="s">Снежный ком: сначала самый маленький долг</option></select></label>
+<div class="res" id="out"></div>
+</div>
+<script>const f=n=>isFinite(n)?Math.round(n).toLocaleString('ru-RU')+' ₽':'—';const v=id=>parseFloat((document.getElementById(id).value||'0').replace(/\s/g,'').replace(',','.'))||0;
+const D=[["Кредитная карта",60000,30,3000],["Потребкредит",200000,22,8000],["Рассрочка",25000,0,2500],["",0,0,0],["",0,0,0]];
+const box=document.getElementById('debts');
+D.forEach((d,i)=>{box.insertAdjacentHTML('beforeend','<label>Долг '+(i+1)+'<input id="n'+i+'" value="'+d[0]+'" placeholder="Название"></label><div style="display:flex;gap:8px;margin:-6px 0 14px"><input id="b'+i+'" inputmode="decimal" value="'+(d[1]||'')+'" placeholder="Остаток ₽" aria-label="Остаток"><input id="r'+i+'" inputmode="decimal" value="'+(d[1]?d[2]:'')+'" placeholder="% год." aria-label="Ставка"><input id="m'+i+'" inputmode="decimal" value="'+(d[3]||'')+'" placeholder="Мин. платёж" aria-label="Минимальный платёж"></div>')});
+function sim(ds,extra,meth,roll=true){ds=ds.map(d=>({...d}));let mo=0,int=0,order=[];
+ while(ds.some(d=>d.b>0.5)&&mo<600){mo++;let pool=extra;
+  ds.forEach(d=>{if(d.b>0.5){const x=d.b*d.r/1200;int+=x;d.b+=x}});
+  ds.forEach(d=>{if(d.b>0.5){const p=Math.min(d.m,d.b);d.b-=p;}else if(roll)pool+=d.m});
+  const act=ds.filter(d=>d.b>0.5).sort(meth=='a'?(a,b)=>b.r-a.r||a.b-b.b:(a,b)=>a.b-b.b||b.r-a.r);
+  for(const d of act){const p=Math.min(pool,d.b);d.b-=p;pool-=p;if(pool<=0)break}
+  ds.forEach(d=>{if(d.b<=0.5&&!d.done){d.done=1;order.push(d.n+' — '+mo+' мес.')}})}
+ return{mo,int,order}}
+function r(){const ds=[];for(let i=0;i<5;i++){const b=v('b'+i);if(b>0)ds.push({n:document.getElementById('n'+i).value||('Долг '+(i+1)),b,r:v('r'+i),m:v('m'+i)})}
+ const o=document.getElementById('out');if(!ds.length){o.innerHTML='<p>Добавьте хотя бы один долг.</p>';return}
+ const A=sim(ds,v('extra'),document.getElementById('meth').value),B=sim(ds,0,'a',false);
+ if(A.mo>=600){o.innerHTML='<p>При таких платежах долг не уменьшается: минимальный платёж меньше начисляемых процентов. Увеличьте сумму в месяц.</p>';return}
+ o.innerHTML='<p><b>Без долгов через:</b> '+A.mo+' мес. (примерно '+(A.mo/12).toFixed(1).replace('.',',')+' г.)</p><p><b>Переплата по процентам:</b> '+f(A.int)+'</p>'+
+ (B.mo<600&&B.int>A.int?'<p><b>Экономия по сравнению с минимальными платежами:</b> '+f(B.int-A.int)+' и '+(B.mo-A.mo)+' мес.</p>':'')+
+ '<p><b>Порядок закрытия:</b><br>'+A.order.join('<br>')+'</p>'}
+document.querySelectorAll('input,select').forEach(e=>e.addEventListener('input',r));r();</script>
+<h2>Лавина или снежный ком</h2>
+<p>Лавина выгоднее математически: сначала закрывается долг с самой высокой ставкой, и переплата по процентам минимальна. Снежный ком мотивирует сильнее: маленькие долги исчезают быстро, и освободившийся платёж переходит на следующий.</p>
+<p>Главное в обоих методах: когда один долг закрыт, его платёж не тратится, а добавляется к следующему.</p>
+<p>Расчёт примерный: банки начисляют проценты по-разному, а у кредитных карт бывает льготный период. Точный график смотрите в приложении банка.</p>
+<div class="cta"><b>Готовая таблица семейного бюджета</b><p>План и факт по категориям, дашборд месяца, цели накоплений и диаграммы. Excel и Google Таблицы, всё считается само.</p><a class="btn" href="https://boosty.to/finance_tables">Посмотреть таблицу за 390 ₽</a><p><small>Удобнее платить в Telegram? <a href="https://t.me/budget_prosto_bot?start=buy_budget2027">Купить через бота за 250 ⭐</a>. Сначала хотите попробовать? <a href="../besplatnaya-tablica-rashodov/">Скачайте бесплатную мини-версию</a>.</small></p></div><h2>Читайте также</h2><div class="list"><a href="../kak-vesti-semejnyj-byudzhet/"><b>Как вести семейный бюджет: пошаговая инструкция для начинающих</b><small>Простая система учёта доходов и расходов семьи: с чего начать, какие категории завести и как не бросить через неделю.</small></a><a href="../pravilo-50-30-20/"><b>Правило 50/30/20: как распределять зарплату</b><small>Что такое правило 50/30/20, как применить его к российской зарплате и когда его стоит изменить.</small></a><a href="../podushka-bezopasnosti/"><b>Подушка безопасности: сколько нужно и как накопить</b><small>Какого размера должна быть финансовая подушка, где её хранить и как накопить, даже если денег впритык.</small></a><a href="../kalkulyator-50-30-20/"><b>Калькулятор 50/30/20: как распределить зарплату онлайн</b><small>Введите доход и получите готовое распределение по правилу 50/30/20: обязательные расходы, желания и накопления.</small></a></div><p><a href="../">← На главную</a></p><div class="cta tg"><b>Telegram-канал «Личные финансы просто»</b><p>Короткие советы по бюджету и накоплениям и анонсы новых статей.</p><a class="btn" href="https://t.me/budget_prosto_ru">Подписаться в Telegram</a></div></main><footer><div class="w">Статьи носят информационный характер и не являются финансовой консультацией. Тексты подготовлены с помощью ИИ.</div></footer></body></html>
